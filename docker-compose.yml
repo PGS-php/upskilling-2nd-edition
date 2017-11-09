@@ -1,0 +1,32 @@
+version: '2'
+services:
+    php:
+        container_name: tm_php
+        build: ./docker/php
+        volumes:
+            - ./taskmanager:/var/www/html
+        links:
+            - mysql
+        working_dir: /var/www/html
+    nginx:
+        container_name: tm_nginx
+        image: nginx:stable
+        ports:
+            - "80:80"
+        links:
+            - php
+        volumes_from:
+            - php
+        volumes:
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./logs/nginx:/var/log/nginx
+    mysql:
+        container_name: tm_mysql
+        image: mysql:5.7
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: tm
+            MYSQL_USER: tm
+            MYSQL_PASSWORD: tm
+        ports:
+            - "3306:3306"
