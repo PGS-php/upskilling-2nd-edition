@@ -12,4 +12,6 @@ interface TaskRegistry
     public function add(Task $task): void;
 
     public function getByStatus(Status $status): array;
+
+    public function getByName(string $name): array;
 }

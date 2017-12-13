@@ -12,4 +12,9 @@ class TaskRegistrySpec extends ObjectBehavior
     {
         $this->shouldImplement(TaskRegistry::class);
     }
+
+    function it_should_have_possibility_to_find_by_name()
+    {
+        $this->getByName('Add button')->shouldBeArray();
+    }
 }

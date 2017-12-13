@@ -29,4 +29,11 @@ class TaskRegistry implements BaseTaskRegistry
             return $status->equals($task->getStatus());
         });
     }
+
+    public function getByName(string $name): array
+    {
+        return array_filter($this->tasks, function (Task $task) use ($name) {
+            return $name === $task->getName();
+        });
+    }
 }

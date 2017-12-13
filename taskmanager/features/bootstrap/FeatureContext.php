@@ -15,6 +15,9 @@ class FeatureContext implements Context
     /** @var \App\Application\Task\TaskRegistry */
     private $taskRegistry;
 
+    /** @var \App\Infrastructure\InMemory\UserRegistry */
+    private $userRegistry;
+
     /**
      * Initializes context.
      *
@@ -24,6 +27,7 @@ class FeatureContext implements Context
      */
     public function __construct()
     {
+        $this->taskRegistry = new \App\Infrastructure\InMemory\TaskRegistry();
     }
 
     /**
@@ -52,5 +56,69 @@ class FeatureContext implements Context
             (int) $count,
             $this->taskRegistry->getByStatus(Status::toDo())
         );
+    }
+
+    /**
+     * @Given there are follow users:
+     */
+    public function thereAreFollowUsers(TableNode $table)
+    {
+        $this->userRegistry = new \App\Infrastructure\InMemory\UserRegistry();
+        foreach ($table as $item) {
+            $user = new \App\Application\User\User($item['Name']);
+            $this->userRegistry->add($user);
+        }
+    }
+
+    /**
+     * @Given there is unassigned task named :arg1
+     */
+    public function thereIsUnassignedTaskNamed($name)
+    {
+        $task = new \App\Application\Task\Task($name, Status::toDo());
+        $this->taskRegistry->add($task);
+    }
+
+    /**
+     * @When I assigned task named :task to user named :arg2
+     */
+    public function iAssignedTaskNamedToUserNamed(\App\Application\Task\Task $task, $userName)
+    {
+        $userCollection = $this->userRegistry->getByName($userName);
+        $user = reset($userCollection);
+        $task->assign($user);
+    }
+
+    /**
+     * @Then task named :task should be assigned to user named :userName
+     */
+    public function taskNamedShouldBeAssignedToUserNamed(\App\Application\Task\Task $task, $userName)
+    {
+        $userCollection = $this->userRegistry->getByName($userName);
+        $user = reset($userCollection);
+
+        Assert::assertTrue($task->hasAssignment());
+        Assert::assertEquals(
+            $user,
+            $task->assigned()
+        );
+    }
+
+    /**
+     * @Transform :task
+     */
+    public function convertTaskNameToTask(string $task): \App\Application\Task\Task
+    {
+        $taskCollection = $this->taskRegistry->getByName($task);
+        /** @var \App\Application\Task\Task $task */
+        return reset($taskCollection);
+    }
+
+    /**
+     * @Given there is task named :arg1 assigned to user named :arg2
+     */
+    public function thereIsTaskNamedAssignedToUserNamed($arg1, $arg2)
+    {
+        throw new PendingException();
     }
 }
