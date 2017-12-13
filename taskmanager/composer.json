@@ -14,5 +14,8 @@
             "App\\": "src/"
         }
     },
-    "license": "MIT"
+    "license": "MIT",
+    "config": {
+        "bin-dir": "bin"
+    }
 }
