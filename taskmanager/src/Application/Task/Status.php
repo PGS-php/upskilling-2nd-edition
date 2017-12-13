@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Task;
 
@@ -15,12 +15,12 @@ class Status
 
     public function __toString()
     {
-        return (string) $this->status;
+        return (string)$this->status;
     }
 
     public function equals(Status $status): bool
     {
-        return (string) $status === (string) $this;
+        return (string)$status === (string)$this;
     }
 
     public static function toDo(): self

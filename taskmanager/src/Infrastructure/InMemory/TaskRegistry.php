@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Infrastructure\InMemory;
 
@@ -20,13 +20,13 @@ class TaskRegistry implements BaseTaskRegistry
 
     public function add(Task $task): void
     {
-        $this->tasks[(string) $task->getId()] = $task;
+        $this->tasks[(string)$task->getId()] = $task;
     }
 
     public function getByStatus(Status $status): array
     {
-        return array_filter($this->tasks, function(Task $task) use ($status) {
-             return $status->equals($task->getStatus());
+        return array_filter($this->tasks, function (Task $task) use ($status) {
+            return $status->equals($task->getStatus());
         });
     }
 }
