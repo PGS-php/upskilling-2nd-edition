@@ -14,11 +14,5 @@
             "App\\": "src/"
         }
     },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Michal Kruczek",
-            "email": "michal@kruczek.it"
-        }
-    ]
+    "license": "MIT"
 }
