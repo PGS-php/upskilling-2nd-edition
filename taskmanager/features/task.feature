@@ -1,7 +1,7 @@
 # language: en
   Feature: Task management
     In order to efficiently manage tasks
-    As an user
+    As a user
     I want to create, follow up and assign tasks in team
 
     Scenario: Create a simple task
