@@ -6,7 +6,7 @@ Self learning project
 Clone repository
 
 ```bash
-    docker-compose up
+docker-compose up
 ```
 
 ## Contributing
