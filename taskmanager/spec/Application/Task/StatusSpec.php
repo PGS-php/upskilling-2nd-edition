@@ -34,4 +34,22 @@ class StatusSpec extends ObjectBehavior
     {
         $this->shouldReturnAnInstanceOf(Status::class);
     }
+
+    function it_should_has_in_progress_static_contstructor()
+    {
+        $this->beConstructedThrough('inProgress');
+        $this->shouldReturnAnInstanceOf(Status::class);
+    }
+
+    function it_should_has_done_static_contstructor()
+    {
+        $this->beConstructedThrough('done');
+        $this->shouldReturnAnInstanceOf(Status::class);
+    }
+
+    function it_should_has_closed_static_contstructor()
+    {
+        $this->beConstructedThrough('closed');
+        $this->shouldReturnAnInstanceOf(Status::class);
+    }
 }

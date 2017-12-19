@@ -22,6 +22,9 @@ class FeatureContext implements Context
     /** @var UserRegistry */
     private $userRegistry;
 
+    /** @var \App\Application\Task\Task */
+    private $task;
+
     /**
      * Initializes context.
      *
@@ -32,6 +35,36 @@ class FeatureContext implements Context
     public function __construct()
     {
         $this->taskRegistry = new TaskRegistry();
+    }
+
+    /**
+     * @Transform :status
+     */
+    public function castStatusStringToObject(string $status): Status
+    {
+        switch ($status) {
+            case 'TODO':
+                return Status::toDo();
+            case 'IN PROGRESS':
+                return Status::inProgress();
+            case 'DONE':
+                return Status::done();
+            case 'CLOSED':
+                return Status::closed();
+        }
+
+        throw new Exception(sprintf(
+            'Unknow status name "%s". Allowed options: "TODO", "IN PROGRESS", "DONE", "CLOSED"',
+            $status
+        ));
+    }
+
+    /**
+     * @Transform :count
+     */
+    public function castStringToInt(string $number): int
+    {
+        return intval($number);
     }
 
     /**
@@ -202,4 +235,43 @@ class FeatureContext implements Context
         Assert::assertEmpty($this->taskRegistry->getByName($name));
     }
 
+    /**
+     * @Given there is a task named :taskName with :status status
+     */
+    public function thereIsTaskNamed(string $taskName, Status $status)
+    {
+        $this->task = new \App\Application\Task\Task($taskName, $status);
+
+        $this->taskRegistry = new \App\Infrastructure\InMemory\TaskRegistry();
+        $this->taskRegistry->add($this->task);
+    }
+
+    /**
+     * @When I move this task to :status column
+     */
+    public function iMoveThisTaskToColumn(Status $status)
+    {
+        $this->task->setStatus($status);
+    }
+
+    /**
+     * @Then there still will be :count task
+     */
+    public function thereStillWillBeTask(int $count)
+    {
+        Assert::assertCount(
+            $count,
+            $this->taskRegistry
+        );
+    }
+
+    /**
+     * @Then it should have status :status
+     */
+    public function itShouldHaveStatus(Status $status)
+    {
+        Assert::assertTrue(
+            $this->task->getStatus()->equals($status)
+        );
+    }
 }
