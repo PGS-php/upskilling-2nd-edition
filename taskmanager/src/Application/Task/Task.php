@@ -57,6 +57,11 @@ class Task
         return $this->status;
     }
 
+    public function setStatus(Status $status)
+    {
+        $this->status = $status;
+    }
+
     /**
      * @return string
      */

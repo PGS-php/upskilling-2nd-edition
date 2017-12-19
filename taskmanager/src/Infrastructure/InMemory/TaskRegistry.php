@@ -5,8 +5,9 @@ namespace App\Infrastructure\InMemory;
 use App\Application\Task\Status;
 use App\Application\Task\Task;
 use App\Application\Task\TaskRegistry as BaseTaskRegistry;
+use Countable;
 
-class TaskRegistry implements BaseTaskRegistry
+class TaskRegistry implements BaseTaskRegistry, Countable
 {
     private $tasks = [];
 
@@ -40,5 +41,10 @@ class TaskRegistry implements BaseTaskRegistry
     public function remove(Task $task): void
     {
         unset($this->tasks[(string)$task->getId()]);
+    }
+
+    public function count(): int
+    {
+        return count($this->tasks);
     }
 }
