@@ -4,14 +4,13 @@ namespace App\Application\Task;
 
 use App\Application\User\UnassignedUserException;
 use App\Application\User\User;
-use App\Application\User\UserAlreadyExistException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 class Task
 {
-    protected $name;
     protected $id;
+    protected $name;
     protected $status;
 
     /** @var User */

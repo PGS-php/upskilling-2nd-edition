@@ -22,5 +22,5 @@
 
     Scenario: Assign already assigned task
       Given there is task named "Add switch language button" assigned to user named "Carl"
-      When I assigned task to user named "Sarah"
-      Then task should be assigned to user named "Sarah"
+      When I assigned task named "Add switch language button" to user named "Sarah"
+      Then task named "Add switch language button" should be assigned to user named "Sarah"

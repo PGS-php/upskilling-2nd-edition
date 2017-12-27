@@ -6,16 +6,20 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use PHPUnit\Framework\Assert;
+use App\Application\Task\Task;
+use App\Application\User\User;
+use App\Infrastructure\InMemory\TaskRegistry;
+use App\Infrastructure\InMemory\UserRegistry;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context
 {
-    /** @var \App\Application\Task\TaskRegistry */
+    /** @var TaskRegistry */
     private $taskRegistry;
 
-    /** @var \App\Infrastructure\InMemory\UserRegistry */
+    /** @var UserRegistry */
     private $userRegistry;
 
     /**
@@ -27,7 +31,7 @@ class FeatureContext implements Context
      */
     public function __construct()
     {
-        $this->taskRegistry = new \App\Infrastructure\InMemory\TaskRegistry();
+        $this->taskRegistry = new TaskRegistry();
     }
 
     /**
@@ -35,7 +39,7 @@ class FeatureContext implements Context
      */
     public function thereIsNoTasks()
     {
-        $this->taskRegistry = new \App\Infrastructure\InMemory\TaskRegistry();
+        $this->taskRegistry = new TaskRegistry();
     }
 
     /**
@@ -43,7 +47,7 @@ class FeatureContext implements Context
      */
     public function iCreateATaskNamed($taskName)
     {
-        $task = new \App\Application\Task\Task($taskName, Status::toDo());
+        $task = new Task($taskName, Status::toDo());
         $this->taskRegistry->add($task);
     }
 
@@ -63,40 +67,35 @@ class FeatureContext implements Context
      */
     public function thereAreFollowUsers(TableNode $table)
     {
-        $this->userRegistry = new \App\Infrastructure\InMemory\UserRegistry();
+        $this->userRegistry = new UserRegistry();
         foreach ($table as $item) {
-            $user = new \App\Application\User\User($item['Name']);
+            $user = new User($item['Name']);
             $this->userRegistry->add($user);
         }
     }
 
     /**
-     * @Given there is unassigned task named :arg1
+     * @Given there is unassigned task named :name
      */
     public function thereIsUnassignedTaskNamed($name)
     {
-        $task = new \App\Application\Task\Task($name, Status::toDo());
+        $task = new Task($name, Status::toDo());
         $this->taskRegistry->add($task);
     }
 
     /**
-     * @When I assigned task named :task to user named :arg2
+     * @When I assigned task named :task to user named :user
      */
-    public function iAssignedTaskNamedToUserNamed(\App\Application\Task\Task $task, $userName)
+    public function iAssignedTaskNamedToUserNamed(Task $task, User $user)
     {
-        $userCollection = $this->userRegistry->getByName($userName);
-        $user = reset($userCollection);
         $task->assign($user);
     }
 
     /**
-     * @Then task named :task should be assigned to user named :userName
+     * @Then task named :task should be assigned to user named :user
      */
-    public function taskNamedShouldBeAssignedToUserNamed(\App\Application\Task\Task $task, $userName)
+    public function taskNamedShouldBeAssignedToUserNamed(Task $task, User $user)
     {
-        $userCollection = $this->userRegistry->getByName($userName);
-        $user = reset($userCollection);
-
         Assert::assertTrue($task->hasAssignment());
         Assert::assertEquals(
             $user,
@@ -105,20 +104,32 @@ class FeatureContext implements Context
     }
 
     /**
+     * @Given there is task named :name assigned to user named :user
+     */
+    public function thereIsTaskNamedAssignedToUserNamed($name, User $user)
+    {
+        $task = new Task($name, Status::toDo());
+        $task->assign($user);
+        $this->taskRegistry->add($task);
+    }
+
+    /**
      * @Transform :task
      */
-    public function convertTaskNameToTask(string $task): \App\Application\Task\Task
+    public function convertTaskNameToTask(string $task): Task
     {
         $taskCollection = $this->taskRegistry->getByName($task);
-        /** @var \App\Application\Task\Task $task */
+
         return reset($taskCollection);
     }
 
     /**
-     * @Given there is task named :arg1 assigned to user named :arg2
+     * @Transform :user
      */
-    public function thereIsTaskNamedAssignedToUserNamed($arg1, $arg2)
+    public function convertUserNameToUser(string $user): User
     {
-        throw new PendingException();
+        $userCollection = $this->userRegistry->getByName($user);
+
+        return reset($userCollection);
     }
 }
