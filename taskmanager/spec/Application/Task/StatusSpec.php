@@ -30,7 +30,7 @@ class StatusSpec extends ObjectBehavior
         $this->__toString()->shouldReturn('TODO');
     }
 
-    function it_should_has_todo_static_contstructor()
+    function it_should_has_todo_static_constructor()
     {
         $this->shouldReturnAnInstanceOf(Status::class);
     }
