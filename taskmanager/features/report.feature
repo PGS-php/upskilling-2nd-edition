@@ -4,26 +4,52 @@ Feature: Generate a report
   As a user or system
   I want to generate various of reports
 
-  Scenario: Generate report for TODO tasks
-    Given There is no reports
-    And there are "2" tasks with "TODO" status
-    When I generate report with criteria "unfinished"
-    Then there should be "1" report
+  Background:
+    Given the following tasks exist:
+      | Name                       | Status      | Assign | Create date         | Update date         |
+      | Add switch language button | TODO        |        | 2018-01-01 00:00:00 | 2018-01-01 00:00:00 |
+      | Create footer with year    | TODO        |        | 2018-01-01 00:00:00 | 2018-01-01 00:00:00 |
+      | Base HTML template         | DONE        | Sarah  | 2018-01-01 00:00:00 | 2018-01-02 00:00:00 |
+      | Twig template              | IN PROGRESS | Sarah  | 2018-01-01 00:00:00 | 2018-01-02 00:00:00 |
+      | Setup repository           | CLOSED      | Carl   | 2018-01-01 00:00:00 | 2018-01-01 00:00:00 |
+      | Retrospection              | TODO        |        | 2018-01-01 00:00:00 | 2018-01-01 00:00:00 |
 
+  Scenario: Generate report for unfinished tasks
+    When I generate a report with the following criteria:
+      | Key    | Value            |
+      | status | todo,in progress |
+    Then report should contain elements:
+      | Label      | Value |
+      | Unfinished | 4     |
 
-#  Scenario: Generate report for open tasks
-#Given a user named Bob
-#When he define “open tasks” criteria and generate report
-#Then PDF raport will be generated
+  Scenario: Generate report for tasks finished today
+    When I generate a report with the following criteria:
+      | Key           | Value               |
+      | status        | done,closed         |
+      | update after  | 2018-01-02 00:00:00 |
+      | update before | 2018-01-02 23:59:59 |
+    Then report should contain elements:
+      | Label          | Value |
+      | Finished today | 1     |
 
-#Scenario: Generate report not delivered
-#Given a user named Bob
-#When he define “open tasks” criteria and generate report
-#And generation failed because
-#Then email will be sent to user
-#And log message with report id and date will be created
-#
-#Scenario: Generate weekly report for open tasks
-#Given for
-#When it’s Friday 9:00
-#Then PDF report will be generated and saved
+  Scenario: Generate report for efficiency of "this week"
+    When I generate a report with the following criteria:
+      | Key            | Value               |
+      | status         | closed              |
+      | updated after  | 2018-01-01 00:00:00 |
+      | updated before | 2018-01-07 23:59:59 |
+    Then report should contain elements:
+      | Label      | Value |
+      | Efficiency | 33,3% |
+
+  Scenario: Generate report for Sarah tasks
+    When I generate a report with the following criteria:
+      | Key    | Value |
+      | assign | Sarah |
+    Then report should contain elements:
+      | Label | Value |
+      | User  | Sarah |
+    And report should contain tasks:
+      | Name               |
+      | Base HTML template |
+      | Twig template"     |
