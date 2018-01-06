@@ -4,51 +4,30 @@ namespace App\Application\Report;
 
 class Criteria
 {
-    public const UNFINISHED = 'UNFINISHED';
-    public const DONE = 'DONE';
-    public const INPROGRESS = 'INPROGRESS';
-    public const EFFICIENCY = 'EFFICIENCY';
+    private const CRITERIA_TYPES = [
+        'status',
+        'assign',
+        'updated after',
+        'updated before',
+    ];
 
-    private $criteria;
+    private $criteria = [];
 
-    private function __construct(string $criteria)
+    public function add(string $type, $criteria): void
     {
-        $this->criteria = $criteria;
+        if (!$this->isAllowedCriteria($type)) {
+            throw new \InvalidArgumentException();
+        }
+        $this->criteria[$type][] = $criteria;
     }
 
-
-    public function __toString()
-    {
-        return (string)$this->criteria;
-    }
-
-    public function equals(Criteria $criteria): bool
-    {
-        return (string)$criteria === (string)$this;
-    }
-
-    public static function unfinished(): self
-    {
-        return new self(self::UNFINISHED);
-    }
-
-    public static function done(): self
-    {
-        return new self(self::DONE);
-    }
-
-    public static function efficiency()
-    {
-        return new self(self::EFFICIENCY);
-    }
-
-    public static function inprogress()
-    {
-        return new self(self::INPROGRESS);
-    }
-
-    public function getCriteria(): string
+    public function getCriteria(): array
     {
         return $this->criteria;
+    }
+
+    private function isAllowedCriteria($type): bool
+    {
+        return in_array($type, self::CRITERIA_TYPES);
     }
 }

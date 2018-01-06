@@ -26,8 +26,8 @@ Feature: Generate a report
     When I generate a report with the following criteria:
       | Key           | Value               |
       | status        | done,closed         |
-      | update after  | 2018-01-02 00:00:00 |
-      | update before | 2018-01-02 23:59:59 |
+      | updated after  | 2018-01-02 00:00:00 |
+      | updated before | 2018-01-02 23:59:59 |
     Then report should contain elements:
       | Label          | Value |
       | Finished today | 1     |
