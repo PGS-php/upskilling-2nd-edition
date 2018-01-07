@@ -134,15 +134,6 @@ class FeatureContext implements Context
     }
 
     /**
-     * @When I create a task named :name with create date :date
-     */
-    public function iCreateATaskNamedWithCreateDate($name, $date)
-    {
-        $task = new Task($name, Status::toDo(), DateTime::createFromFormat('Y-m-d H:i:s', $date));
-        $this->taskRegistry->add($task);
-    }
-
-    /**
      * @Then there should be :count tasks
      */
     public function thereShouldBeTasks($count)
@@ -154,39 +145,28 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Then create date should be :date
+     * @Then task should have create date
      */
-    public function createDateShouldBe($date)
+    public function taskShouldHaveCreateDate()
     {
         $tasks = $this->taskRegistry->getAll();
+        $now = new \DateTime();
         Assert::assertEquals(
-            DateTime::createFromFormat('Y-m-d H:i:s', $date),
-            reset($tasks)->getCreate()
+            $now->format(Task::DATE_FORMAT),
+            reset($tasks)->getCreatedAt()->format(Task::DATE_FORMAT)
         );
     }
 
     /**
-     * @When I create a task named :name with create date :create and update date :update
+     * @Then task should have update date
      */
-    public function iCreateATaskNamedWithCreateDateAndUpdateDate($name, $create, $update)
-    {
-        $task = new Task(
-            $name, Status::toDo(),
-            DateTime::createFromFormat('Y-m-d H:i:s', $create),
-            DateTime::createFromFormat('Y-m-d H:i:s', $update)
-        );
-        $this->taskRegistry->add($task);
-    }
-
-    /**
-     * @Then update date should be :date
-     */
-    public function updateDateShouldBe($date)
+    public function taskShouldHaveUpdateDate()
     {
         $tasks = $this->taskRegistry->getAll();
+        $now = new \DateTime();
         Assert::assertEquals(
-            DateTime::createFromFormat('Y-m-d H:i:s', $date),
-            reset($tasks)->getUpdate()
+            $now->format(Task::DATE_FORMAT),
+            reset($tasks)->getUpdatedAt()->format(Task::DATE_FORMAT)
         );
     }
 }

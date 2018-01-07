@@ -46,6 +46,16 @@ class TaskSpec extends ObjectBehavior
         $this->assigned()->shouldReturn($user);
     }
 
+    function it_should_has_createdat_date()
+    {
+        $this->getCreatedAt()->shouldReturnAnInstanceOf(\DateTimeInterface::class);
+    }
+
+    function it_should_has_updatedat_date()
+    {
+        $this->getUpdatedAt()->shouldReturnAnInstanceOf(\DateTimeInterface::class);
+    }
+
     function it_has_assignment()
     {
         $this->hasAssignment()->shouldReturn(false);
