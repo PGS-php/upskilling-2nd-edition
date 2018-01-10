@@ -26,7 +26,7 @@ class Task
         $this->name = $name;
         $this->status = $status;
         $this->createdAt = new \DateTime();
-        $this->setUpdatedAt();
+        $this->update();
     }
 
     public function getId(): UuidInterface
@@ -69,7 +69,7 @@ class Task
     public function assign(User $user): void
     {
         $this->user = $user;
-        $this->setUpdatedAt();
+        $this->update();
     }
 
     public function hasAssignment(): bool
@@ -77,7 +77,7 @@ class Task
         return $this->user !== null;
     }
 
-    private function setUpdatedAt()
+    private function update(): void
     {
         $this->updatedAt = new \DateTime();
     }
