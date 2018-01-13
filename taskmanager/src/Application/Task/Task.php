@@ -95,6 +95,11 @@ class Task
         $this->update();
     }
 
+    public function unassign(): void
+    {
+        $this->user = null;
+    }
+
     public function hasAssignment(): bool
     {
         return $this->user !== null;

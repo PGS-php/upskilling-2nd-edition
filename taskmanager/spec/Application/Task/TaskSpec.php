@@ -65,35 +65,9 @@ class TaskSpec extends ObjectBehavior
         $this->getPriority()->shouldReturn(Task::PRIORITY_MAJOR);
     }
 
-    function it_should_be_possible_to_change_status_to_todo()
+    function it_should_be_possible_to_change_status(Status $status)
     {
-        $status = Status::toDo();
         $this->setStatus($status);
-
-        $this->getStatus()->shouldBeEqualTo($status);
-    }
-
-    function it_should_be_possible_to_change_status_to_in_progress()
-    {
-        $status = Status::inProgress();
-        $this->setStatus($status);
-
-        $this->getStatus()->shouldBeEqualTo($status);
-    }
-
-    function it_should_be_possible_to_change_status_to_done()
-    {
-        $status = Status::done();
-        $this->setStatus($status);
-
-        $this->getStatus()->shouldBeEqualTo($status);
-    }
-
-    function it_should_be_possible_to_change_status_to_closed()
-    {
-        $status = Status::closed();
-        $this->setStatus($status);
-
         $this->getStatus()->shouldBeEqualTo($status);
     }
 }

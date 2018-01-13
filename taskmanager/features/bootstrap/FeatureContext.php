@@ -22,9 +22,6 @@ class FeatureContext implements Context
     /** @var UserRegistry */
     private $userRegistry;
 
-    /** @var \App\Application\Task\Task */
-    private $task;
-
     /**
      * Initializes context.
      *
@@ -38,9 +35,30 @@ class FeatureContext implements Context
     }
 
     /**
+     * @Transform :user
+     */
+    public function convertUserNameToUser(string $user): User
+    {
+        $userCollection = $this->userRegistry->getByName($user);
+
+        return reset($userCollection);
+    }
+
+
+    /**
+     * @Transform :task
+     */
+    public function convertTaskNameToTask(string $task): Task
+    {
+        $taskCollection = $this->taskRegistry->getByName($task);
+
+        return reset($taskCollection);
+    }
+
+    /**
      * @Transform :status
      */
-    public function castStatusStringToObject(string $status): Status
+    public function convertStatusNameToStatus(string $status): Status
     {
         switch ($status) {
             case 'TODO':
@@ -57,14 +75,6 @@ class FeatureContext implements Context
             'Unknow status name "%s". Allowed options: "TODO", "IN PROGRESS", "DONE", "CLOSED"',
             $status
         ));
-    }
-
-    /**
-     * @Transform :count
-     */
-    public function castStringToInt(string $number): int
-    {
-        return intval($number);
     }
 
     /**
@@ -147,23 +157,14 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Transform :task
+     * @Given there is a task named :taskName with :status status
      */
-    public function convertTaskNameToTask(string $task): Task
+    public function thereIsTaskNamedWithStatus(string $taskName, Status $status)
     {
-        $taskCollection = $this->taskRegistry->getByName($task);
+        $task = new Task($taskName, $status);
 
-        return reset($taskCollection);
-    }
-
-    /**
-     * @Transform :user
-     */
-    public function convertUserNameToUser(string $user): User
-    {
-        $userCollection = $this->userRegistry->getByName($user);
-
-        return reset($userCollection);
+        $this->taskRegistry = new TaskRegistry();
+        $this->taskRegistry->add($task);
     }
 
     /**
@@ -236,42 +237,38 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Given there is a task named :taskName with :status status
+     * @When user named :user changes task named :task status to :status
      */
-    public function thereIsTaskNamed(string $taskName, Status $status)
+    public function userNamedChangesTaskNamedStatusTo(User $user, Task $task, Status $status)
     {
-        $this->task = new \App\Application\Task\Task($taskName, $status);
+        if ($task->getStatus()->equals(Status::closed())) {
+            return;
+        }
 
-        $this->taskRegistry = new \App\Infrastructure\InMemory\TaskRegistry();
-        $this->taskRegistry->add($this->task);
+        $task->setStatus($status);
+
+        if ($status->equals(Status::inProgress())) {
+            $task->assign($user);
+        } elseif ($status->equals(Status::toDo())) {
+            $task->unassign();
+        }
     }
 
     /**
-     * @When I move this task to :status column
+     * @Then task named :task should have status :status
      */
-    public function iMoveThisTaskToColumn(Status $status)
-    {
-        $this->task->setStatus($status);
-    }
-
-    /**
-     * @Then there still will be :count task
-     */
-    public function thereStillWillBeTask(int $count)
-    {
-        Assert::assertCount(
-            $count,
-            $this->taskRegistry
-        );
-    }
-
-    /**
-     * @Then it should have status :status
-     */
-    public function itShouldHaveStatus(Status $status)
+    public function taskNamedShouldHaveStatus(Task $task, Status $status)
     {
         Assert::assertTrue(
-            $this->task->getStatus()->equals($status)
+            $task->getStatus()->equals($status)
         );
+    }
+
+    /**
+     * @Then task named :task should be unassigned
+     */
+    public function taskNamedShouldBeUnassigned(Task $task)
+    {
+        Assert::assertNotTrue($task->hasAssignment());
     }
 }
