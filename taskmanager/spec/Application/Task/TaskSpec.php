@@ -7,7 +7,6 @@ use App\Application\Task\Task;
 use App\Application\User\UnassignedUserException;
 use App\Application\User\User;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Ramsey\Uuid\UuidInterface;
 
 class TaskSpec extends ObjectBehavior
@@ -49,5 +48,10 @@ class TaskSpec extends ObjectBehavior
     function it_has_assignment()
     {
         $this->hasAssignment()->shouldReturn(false);
+    }
+
+    function it_should_has_priority()
+    {
+        $this->getPriority()->shouldReturn(Task::PRIORITY_MAJOR);
     }
 }

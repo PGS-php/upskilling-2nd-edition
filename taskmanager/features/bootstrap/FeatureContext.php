@@ -132,4 +132,37 @@ class FeatureContext implements Context
 
         return reset($userCollection);
     }
+
+    /**
+     * @When I change task named :task priority to :priority
+     */
+    public function iChangeTaskNamedPriorityTo(Task $task, string $priority)
+    {
+        $task->setPriority($priority);
+    }
+
+    /**
+     * @Then task named :task should have priority value equal to :priority
+     */
+    public function taskNamedShouldHavePriorityValueEqualTo(Task $task, string $priority)
+    {
+        Assert::assertEquals($priority, $task->getPriority());
+    }
+
+    /**
+     * @When I remove task named :task
+     */
+    public function iRemoveTaskNamed(Task $task)
+    {
+        $this->taskRegistry->remove($task);
+    }
+
+    /**
+     * @Then task named :name should no longer exist
+     */
+    public function taskNamedShouldNoLongerExist(string $name)
+    {
+        Assert::assertEmpty($this->taskRegistry->getByName($name));
+    }
+
 }

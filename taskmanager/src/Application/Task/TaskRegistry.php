@@ -14,4 +14,6 @@ interface TaskRegistry
     public function getByStatus(Status $status): array;
 
     public function getByName(string $name): array;
+
+    public function remove(Task $task): void;
 }

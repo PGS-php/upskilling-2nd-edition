@@ -9,9 +9,16 @@ use Ramsey\Uuid\UuidInterface;
 
 class Task
 {
+    public const PRIORITY_TRIVIAL = 'Trivial';
+    public const PRIORITY_MINOR = 'Minor';
+    public const PRIORITY_MAJOR = 'Major';
+    public const PRIORITY_CRITICAL = 'Critical';
+    public const PRIORITY_BLOCKER = 'Blocker';
+
     protected $id;
     protected $name;
     protected $status;
+    protected $priority;
 
     /** @var User */
     protected $user;
@@ -21,6 +28,18 @@ class Task
         $this->id = Uuid::uuid4();
         $this->name = $name;
         $this->status = $status;
+        $this->priority = self::PRIORITY_MAJOR;
+    }
+
+    public function getPriorities(): array
+    {
+        return [
+            self::PRIORITY_TRIVIAL => self::PRIORITY_TRIVIAL,
+            self::PRIORITY_MINOR => self::PRIORITY_MINOR,
+            self::PRIORITY_MAJOR => self::PRIORITY_MAJOR,
+            self::PRIORITY_CRITICAL => self::PRIORITY_TRIVIAL,
+            self::PRIORITY_BLOCKER => self::PRIORITY_BLOCKER,
+        ];
     }
 
     public function getId(): UuidInterface
@@ -59,5 +78,19 @@ class Task
     public function hasAssignment(): bool
     {
         return $this->user !== null;
+    }
+
+    public function getPriority(): string
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(string $priority): void
+    {
+        if (!isset($this->getPriorities()[$priority])) {
+            throw new \InvalidArgumentException(sprintf("'%s' priority does not exists!", $priority));
+        }
+
+        $this->priority = $priority;
     }
 }
