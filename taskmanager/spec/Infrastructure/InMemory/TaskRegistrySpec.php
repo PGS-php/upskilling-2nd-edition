@@ -35,4 +35,20 @@ class TaskRegistrySpec extends ObjectBehavior
     {
         $this->getByName('Add button')->shouldBeArray();
     }
+
+    function it_should_have_possibility_remove_task(Task $task, Uuid $uuid)
+    {
+        $uuid->__toString()->willReturn('3912201f-e9a9-4e49-b22d-8dc140b7a9a9');
+        $task->getId()->willReturn($uuid);
+
+        $this->add($task);
+
+        $this->getAll()->shouldBeArray();
+        $this->getAll()->shouldHaveCount(1);
+
+        $this->remove($task);
+
+        $this->getAll()->shouldBeArray();
+        $this->getAll()->shouldHaveCount(0);
+    }
 }
