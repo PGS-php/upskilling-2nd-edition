@@ -44,30 +44,33 @@ Feature: Task management
 
   Scenario: Change task status from TODO to IN PROGRESS
     Given there is a task named "Add switch language button" with "TODO" status
-    When I move this task to "IN PROGRESS" column
-    Then there still will be "1" task
-    And it should have status "IN PROGRESS"
+    When user named "Sarah" changes task named "Add switch language button" status to "IN PROGRESS"
+    Then task named "Add switch language button" should have status "IN PROGRESS"
+    And task named "Add switch language button" should be assigned to user named "Sarah"
 
   Scenario: Change task status from IN PROGRESS to DONE
     Given there is a task named "Add switch language button" with "IN PROGRESS" status
-    When I move this task to "DONE" column
-    Then there still will be "1" task
-    And it should have status "DONE"
+    When user named "Sarah" changes task named "Add switch language button" status to "DONE"
+    Then task named "Add switch language button" should have status "DONE"
 
   Scenario: Change task status from DONE to CLOSED
     Given there is a task named "Add switch language button" with "DONE" status
-    When I move this task to "CLOSED" column
-    Then there still will be "1" task
-    And it should have status "CLOSED"
+    When user named "Sarah" changes task named "Add switch language button" status to "CLOSED"
+    Then task named "Add switch language button" should have status "CLOSED"
 
   Scenario: Change task status from IN PROGRESS to TODO
     Given there is a task named "Add switch language button" with "IN PROGRESS" status
-    When I move this task to "TODO" column
-    Then there still will be "1" task
-    And it should have status "TODO"
+    When user named "Sarah" changes task named "Add switch language button" status to "TODO"
+    Then task named "Add switch language button" should have status "TODO"
+    And task named "Add switch language button" should be unassigned
 
   Scenario: Change task status from DONE to IN PROGRESS
     Given there is a task named "Add switch language button" with "DONE" status
-    When I move this task to "IN PROGRESS" column
-    Then there still will be "1" task
-    And it should have status "IN PROGRESS"
+    When user named "Sarah" changes task named "Add switch language button" status to "IN PROGRESS"
+    Then task named "Add switch language button" should have status "IN PROGRESS"
+    And task named "Add switch language button" should be assigned to user named "Sarah"
+
+  Scenario: Change task status from CLOSED to TODO
+    Given there is a task named "Add switch language button" with "CLOSED" status
+    When user named "Sarah" changes task named "Add switch language button" status to "TODO"
+    Then task named "Add switch language button" should have status "CLOSED"
