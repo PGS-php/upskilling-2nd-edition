@@ -28,5 +28,4 @@ class ReportRegistry implements BaseReportRegistry
             return $name->equals($report->getName());
         });
     }
-
 }

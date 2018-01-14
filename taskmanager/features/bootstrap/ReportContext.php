@@ -26,17 +26,6 @@ class ReportContext implements Context
     private $report;
 
     /**
-     * Initializes context.
-     *
-     * Every scenario gets its own context instance.
-     * You can also pass arbitrary arguments to the
-     * context constructor through behat.yml.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * @Given There is no report(s)
      */
     public function thereIsNoReports()
@@ -115,7 +104,6 @@ class ReportContext implements Context
      */
     public function reportShouldContainTasks(TableNode $table)
     {
-
         $tasks = $this->report->getTasks();
         foreach ($table as $item) {
             $containTask = false;

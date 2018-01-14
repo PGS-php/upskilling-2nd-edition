@@ -4,6 +4,7 @@ namespace App\Application\Report;
 
 use App\Application\Task\Task;
 use App\Application\Task\TaskRegistry;
+use App\Application\User\UnassignedUserException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -73,7 +74,15 @@ class Report
                 //@TODO: implement
                 break;
             case 'assign':
-                //@TODO: implement
+                $statuses = explode(',', $criteriaValue);
+                foreach ($statuses as $status) {
+                    try {
+                        if ($task->assigned()->getFirstName() === $status) {
+                            return true;
+                        }
+                    } catch (UnassignedUserException $e) {
+                    }
+                }
                 break;
         }
 

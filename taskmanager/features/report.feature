@@ -44,4 +44,4 @@ Feature: Generate a report
     Then report should contain tasks:
       | Name               |
       | Base HTML template |
-      | Twig template"     |
+      | Twig template      |
