@@ -22,6 +22,7 @@ class ReportContext implements Context
     /** @var \App\Application\Report\ReportRegistry */
     private $reportRegistry;
 
+    /** @var Report */
     private $report;
 
     /**
@@ -72,10 +73,20 @@ class ReportContext implements Context
         $this->taskRegistry = new TaskRegistry();
         foreach ($table as $item) {
             //@TODO: implement other statuses
-            $status = Status::toDo();
-            //@TODO: implement create and update date
-            // after implement create/update
-//            $task = new Task($item['Name'], $status, $item['Create date'], $item['Update date']);
+            switch ($item['Status']) {
+                case 'TODO':
+                    $status = Status::toDo();
+                    break;
+                case 'DONE':
+                    $status = Status::done();
+                    break;
+                case 'CLOSED':
+                    $status = Status::closed();
+                    break;
+                default:
+                    $status = Status::toDo();
+            }
+
             $task = new Task($item['Name'], $status);
             if (!empty($item['Assign'])) {
                 $user = new User($item['Assign']);
@@ -100,20 +111,21 @@ class ReportContext implements Context
     }
 
     /**
-     * @Then report should contain elements:
-     */
-    public function reportShouldContainElements(TableNode $table)
-    {
-        throw new PendingException();
-        //@TODO: simply check $this->>report->getElements
-    }
-
-    /**
      * @Then report should contain tasks:
      */
     public function reportShouldContainTasks(TableNode $table)
     {
-        throw new PendingException();
-        //@TODO: simply check $this->>report->getTasks
+
+        $tasks = $this->report->getTasks();
+        foreach ($table as $item) {
+            $containTask = false;
+            foreach ($tasks as $task) {
+                /** @var Task $task */
+                if ($task->getName() === $item['Name']) {
+                    $containTask = true;
+                }
+            }
+            Assert::assertTrue($containTask);
+        }
     }
 }

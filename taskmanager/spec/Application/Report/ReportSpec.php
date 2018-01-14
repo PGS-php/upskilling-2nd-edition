@@ -2,6 +2,7 @@
 
 namespace spec\App\Application\Report;
 
+use App\Application\Report\Criteria;
 use App\Application\Report\Report;
 use PhpSpec\ObjectBehavior;
 use Ramsey\Uuid\UuidInterface;
@@ -16,7 +17,8 @@ class ReportSpec extends ObjectBehavior
     function let()
     {
         $this->beConstructedWith(
-            "TODO report"
+            "TODO report",
+            new Criteria()
         );
     }
 
@@ -30,8 +32,8 @@ class ReportSpec extends ObjectBehavior
         $this->getName()->shouldReturn('TODO report');
     }
 
-    function it_should_has_elements()
+    function it_should_has_tasks()
     {
-        $this->getElements()->shouldReturn([]);
+        $this->getTasks()->shouldReturn([]);
     }
 }

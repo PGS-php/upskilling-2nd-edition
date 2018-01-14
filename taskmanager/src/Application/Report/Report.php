@@ -34,20 +34,50 @@ class Report
         return $this->name;
     }
 
-    public function generate(TaskRegistry $tasks)
+    public function generate(TaskRegistry $taskRegistry): void
     {
-        //@TODO: foreach criteria get tasks and add to elements or tasks
-        // how to decide if assigne tasks or elements like Efficiency | 33,3% hmm.. ?
+        $criterias = $this->criteria->getCriteria();
+
+        foreach ($taskRegistry->getAll() as $task) {
+            $matchCriteria = false;
+            foreach ($criterias as $criteriaType => $criteriaValue) {
+                if (!$this->meetCriteria($criteriaType, $criteriaValue, $task)) {
+                    continue;
+                }
+                $matchCriteria = true;
+            }
+
+            if ($matchCriteria) {
+                $this->addTask($task);
+            }
+        }
     }
 
-    private function addElement(string $element)
+    private function meetCriteria(string $criteriaType, string $criteriaValue, Task $task): bool
     {
-        $this->elements[] = $element;
-    }
+        switch ($criteriaType) {
+            case 'status':
+                $statuses = explode(',', $criteriaValue);
+                foreach ($statuses as $status) {
+                    if ((string)$task->getStatus() === strtoupper($status)) {
+                        return true;
+                    }
+                }
+                break;
 
-    public function getElements(): array
-    {
-        return $this->elements;
+            case 'updated after':
+                //@TODO: implement
+                break;
+
+            case 'updated before':
+                //@TODO: implement
+                break;
+            case 'assign':
+                //@TODO: implement
+                break;
+        }
+
+        return false;
     }
 
     private function addTask(Task $task): void

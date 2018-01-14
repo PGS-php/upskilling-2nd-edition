@@ -18,7 +18,7 @@ class Criteria
         if (!$this->isAllowedCriteria($type)) {
             throw new \InvalidArgumentException();
         }
-        $this->criteria[$type][] = $criteria;
+        $this->criteria[$type] = $criteria;
     }
 
     public function getCriteria(): array
