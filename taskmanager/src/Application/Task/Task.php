@@ -12,6 +12,10 @@ class Task
     protected $id;
     protected $name;
     protected $status;
+    protected $createdAt;
+    protected $updatedAt;
+
+    public const DATE_FORMAT = 'Y-m-d H:i:s';
 
     /** @var User */
     protected $user;
@@ -21,6 +25,8 @@ class Task
         $this->id = Uuid::uuid4();
         $this->name = $name;
         $this->status = $status;
+        $this->createdAt = new \DateTime();
+        $this->update();
     }
 
     public function getId(): UuidInterface
@@ -41,6 +47,15 @@ class Task
         return $this->name;
     }
 
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): \DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
 
     public function assigned(): User
     {
@@ -54,10 +69,16 @@ class Task
     public function assign(User $user): void
     {
         $this->user = $user;
+        $this->update();
     }
 
     public function hasAssignment(): bool
     {
         return $this->user !== null;
+    }
+
+    private function update(): void
+    {
+        $this->updatedAt = new \DateTime();
     }
 }

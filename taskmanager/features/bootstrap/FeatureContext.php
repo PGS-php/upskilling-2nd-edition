@@ -57,7 +57,7 @@ class FeatureContext implements Context
     public function thereShouldBeTasksWithStatus($count, $status)
     {
         Assert::assertCount(
-            (int) $count,
+            (int)$count,
             $this->taskRegistry->getByStatus(Status::toDo())
         );
     }
@@ -131,5 +131,42 @@ class FeatureContext implements Context
         $userCollection = $this->userRegistry->getByName($user);
 
         return reset($userCollection);
+    }
+
+    /**
+     * @Then there should be :count tasks
+     */
+    public function thereShouldBeTasks($count)
+    {
+        Assert::assertCount(
+            (int)$count,
+            $this->taskRegistry->getAll()
+        );
+    }
+
+    /**
+     * @Then task should have create date
+     */
+    public function taskShouldHaveCreateDate()
+    {
+        $tasks = $this->taskRegistry->getAll();
+        $now = new \DateTime();
+        Assert::assertEquals(
+            $now->format(Task::DATE_FORMAT),
+            reset($tasks)->getCreatedAt()->format(Task::DATE_FORMAT)
+        );
+    }
+
+    /**
+     * @Then task should have update date
+     */
+    public function taskShouldHaveUpdateDate()
+    {
+        $tasks = $this->taskRegistry->getAll();
+        $now = new \DateTime();
+        Assert::assertEquals(
+            $now->format(Task::DATE_FORMAT),
+            reset($tasks)->getUpdatedAt()->format(Task::DATE_FORMAT)
+        );
     }
 }
