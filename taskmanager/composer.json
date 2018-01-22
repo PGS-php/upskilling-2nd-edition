@@ -7,8 +7,11 @@
     },
     "require-dev": {
         "behat/behat": "^3.4",
-        "phpunit/phpunit": "^6.5",
-        "phpspec/phpspec": "^4.2"
+        "phpunit/phpunit": "^7.0",
+        "phpspec/phpspec": "^4.2",
+        "phpmd/phpmd": "^2.6",
+        "sebastian/phpcpd": "^4.0",
+        "squizlabs/php_codesniffer": "^3.2"
     },
     "autoload": {
         "psr-4": {

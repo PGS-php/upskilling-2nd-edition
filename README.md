@@ -1,4 +1,7 @@
 # Task Manager
+
+[![Build Status](https://travis-ci.org/PGS-php/upskilling-2nd-edition.svg?branch=develop)](https://travis-ci.org/PGS-php/upskilling-2nd-edition)
+
 Self learning project
 
 
