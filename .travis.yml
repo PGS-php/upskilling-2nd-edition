@@ -1,0 +1,23 @@
+language: php
+
+php:
+  - 7.1
+  - 7.2
+
+before_install:
+  - composer self-update
+
+before_script:
+  - cd taskmanager/
+  - travis_retry composer install
+
+script:
+  - ./vendor/bin/phpcs --standard=PSR2 --encoding=UTF-8 --ignore="*.js" src/ --colors -n -p -s
+  - ./vendor/bin/phpcpd --exclude Tests src/
+  - ./vendor/bin/behat
+  - ./vendor/bin/phpspec run
+  - ./vendor/bin/phpunit --no-coverage --testsuite main
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
