@@ -36,4 +36,9 @@ class TaskRegistry implements BaseTaskRegistry
             return $name === $task->getName();
         });
     }
+
+    public function remove(Task $task): void
+    {
+        unset($this->tasks[(string)$task->getId()]);
+    }
 }

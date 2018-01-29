@@ -26,3 +26,13 @@ Feature: Task management
     Given there is task named "Add switch language button" assigned to user named "Carl"
     When I assigned task named "Add switch language button" to user named "Sarah"
     Then task named "Add switch language button" should be assigned to user named "Sarah"
+
+    Scenario: Update task priority
+      Given there is unassigned task named "Change priority test"
+      When I change task named "Change priority test" priority to "Critical"
+      Then task named "Change priority test" should have priority value equal to "Critical"
+
+    Scenario: Delete task
+      Given there is unassigned task named "Deleting test"
+      When I remove task named "Deleting test"
+      Then task named "Deleting test" should no longer exist

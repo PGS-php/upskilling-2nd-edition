@@ -9,13 +9,19 @@ use Ramsey\Uuid\UuidInterface;
 
 class Task
 {
+    public const DATE_FORMAT = 'Y-m-d H:i:s';
+    public const PRIORITY_TRIVIAL = 'Trivial';
+    public const PRIORITY_MINOR = 'Minor';
+    public const PRIORITY_MAJOR = 'Major';
+    public const PRIORITY_CRITICAL = 'Critical';
+    public const PRIORITY_BLOCKER = 'Blocker';
+
     protected $id;
     protected $name;
     protected $status;
     protected $createdAt;
     protected $updatedAt;
-
-    public const DATE_FORMAT = 'Y-m-d H:i:s';
+    protected $priority;
 
     /** @var User */
     protected $user;
@@ -27,6 +33,18 @@ class Task
         $this->status = $status;
         $this->createdAt = new \DateTime();
         $this->update();
+        $this->priority = self::PRIORITY_MAJOR;
+    }
+
+    public function getPriorities(): array
+    {
+        return [
+            self::PRIORITY_TRIVIAL => self::PRIORITY_TRIVIAL,
+            self::PRIORITY_MINOR => self::PRIORITY_MINOR,
+            self::PRIORITY_MAJOR => self::PRIORITY_MAJOR,
+            self::PRIORITY_CRITICAL => self::PRIORITY_TRIVIAL,
+            self::PRIORITY_BLOCKER => self::PRIORITY_BLOCKER,
+        ];
     }
 
     public function getId(): UuidInterface
@@ -75,6 +93,20 @@ class Task
     public function hasAssignment(): bool
     {
         return $this->user !== null;
+    }
+
+    public function getPriority(): string
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(string $priority): void
+    {
+        if (!isset($this->getPriorities()[$priority])) {
+            throw new \InvalidArgumentException(sprintf("'%s' priority does not exists!", $priority));
+        }
+
+        $this->priority = $priority;
     }
 
     private function update(): void
