@@ -10,6 +10,7 @@ use App\Application\Task\Task;
 use App\Application\User\User;
 use App\Infrastructure\InMemory\TaskRegistry;
 use App\Infrastructure\InMemory\UserRegistry;
+use App\Application\Task\UnexpectedStatusChangeException;
 
 /**
  * Defines application features from the specific context.
@@ -75,6 +76,14 @@ class FeatureContext implements Context
             'Unknow status name "%s". Allowed options: "TODO", "IN PROGRESS", "DONE", "CLOSED"',
             $status
         ));
+    }
+
+    /**
+     * @Transform :exception
+     */
+    public function convertToUnexpectedStatusChangeException(string $exception): UnexpectedStatusChangeException
+    {
+        return UnexpectedStatusChangeException::createForClosedStatus();
     }
 
     /**
@@ -163,7 +172,6 @@ class FeatureContext implements Context
     {
         $task = new Task($taskName, $status);
 
-        $this->taskRegistry = new TaskRegistry();
         $this->taskRegistry->add($task);
     }
 
@@ -241,17 +249,7 @@ class FeatureContext implements Context
      */
     public function userNamedChangesTaskNamedStatusTo(User $user, Task $task, Status $status)
     {
-        if ($task->getStatus()->equals(Status::closed())) {
-            return;
-        }
-
-        $task->setStatus($status);
-
-        if ($status->equals(Status::inProgress())) {
-            $task->assign($user);
-        } elseif ($status->equals(Status::toDo())) {
-            $task->unassign();
-        }
+        $task->setStatus($status, $user);
     }
 
     /**
@@ -270,5 +268,25 @@ class FeatureContext implements Context
     public function taskNamedShouldBeUnassigned(Task $task)
     {
         Assert::assertNotTrue($task->hasAssignment());
+    }
+
+    /**
+     * @When task :exception is thrown during user named :user is changing task named :task status change to :status
+     */
+    public function taskIsThrownDuringUserNamedIsChangingTaskNamedStatusChangeTo(
+        UnexpectedStatusChangeException $exception,
+        User $user,
+        Task $task,
+        Status $status
+    ) {
+        try {
+            $task->setStatus($status, $user);
+        } catch (\Exception $thrownException) {
+            Assert::assertEquals($exception, $thrownException);
+
+            return;
+        }
+
+        Assert::fail(sprintf('Expected exception %s was not raised.', UnexpectedStatusChangeException::class));
     }
 }

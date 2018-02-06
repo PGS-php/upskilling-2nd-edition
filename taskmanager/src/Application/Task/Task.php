@@ -57,9 +57,23 @@ class Task
         return $this->status;
     }
 
-    public function setStatus(Status $status)
+    public function setStatus(Status $status, User $user): void
     {
+        if ($this->status->equals($status)) {
+            return;
+        }
+
+        if ($this->status->equals(Status::closed())) {
+            throw UnexpectedStatusChangeException::createForClosedStatus();
+        }
+
         $this->status = $status;
+
+        if ($this->status->equals(Status::inProgress())) {
+            $this->assign($user);
+        } elseif ($this->status->equals(Status::toDo())) {
+            $this->unassign();
+        }
     }
 
     /**
