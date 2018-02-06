@@ -9,9 +9,9 @@ Feature: Task management
       | Name  |
       | Sarah |
       | Carl  |
+    And there is no tasks
 
   Scenario: Create a simple task
-    Given there is no tasks
     When I create a task named "Add switch language button"
     Then there should be "1" tasks with "TODO" status
     And task should have create date
@@ -72,5 +72,5 @@ Feature: Task management
 
   Scenario: Change task status from CLOSED to TODO
     Given there is a task named "Add switch language button" with "CLOSED" status
-    When user named "Sarah" changes task named "Add switch language button" status to "TODO"
+    When task "UnexpectedStatusChangeException" is thrown during user named "Sarah" is changing task named "Add switch language button" status change to "TODO"
     Then task named "Add switch language button" should have status "CLOSED"
