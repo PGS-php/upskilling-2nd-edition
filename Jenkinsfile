@@ -40,5 +40,8 @@ node('docker') {
                 }
             )
         }
+        stage('Clean up') {
+            deleteDir()
+        }
     }
 }
