@@ -1,0 +1,5 @@
+App\Application\Task\Status:
+  type: embeddable
+  fields:
+    status:
+      type: string

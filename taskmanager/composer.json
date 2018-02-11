@@ -3,6 +3,9 @@
     "type": "project",
     "license": "MIT",
     "require": {
+        "silex/silex": "~2.0",
+        "twig/twig": "^2.4",
+        "dflydev/doctrine-orm-service-provider": "^2.0",
         "ramsey/uuid": "^3.7"
     },
     "require-dev": {

@@ -1,0 +1,31 @@
+App\Application\Task\Task:
+  type: entity
+  repositoryClass: App\Infrastructure\Doctrine\Repository\TaskDoctrineRepository
+  table: task
+  embedded:
+      status:
+        class: App\Application\Task\Status
+        columnPrefix: false
+  id:
+      id:
+          type: string
+          nullable: false
+          id: true
+  fields:
+    name:
+      column: name
+      type: string
+      length: 50
+      nullable: false
+    createdAt:
+      column: created_at
+      type: datetime
+      nullable: false
+    updatedAt:
+      column: updated_at
+      type: datetime
+      nullable: false
+    priority:
+      column: priority
+      type: integer
+      nullable: false
