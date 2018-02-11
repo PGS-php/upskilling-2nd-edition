@@ -10,6 +10,7 @@ Feature: Task management
       | Sarah |
       | Carl  |
     And there is no tasks
+    And there is no notifications
 
   Scenario: Create a simple task
     When I create a task named "Add switch language button"
@@ -72,5 +73,6 @@ Feature: Task management
 
   Scenario: Change task status from CLOSED to TODO
     Given there is a task named "Add switch language button" with "CLOSED" status
-    When task "UnexpectedStatusChangeException" is thrown during user named "Sarah" is changing task named "Add switch language button" status change to "TODO"
-    Then task named "Add switch language button" should have status "CLOSED"
+    When user named "Sarah" tries to change task named "Add switch language button" status to "TODO"
+    Then task named "Add switch language button" still should have status "CLOSED"
+    And user named "Sarah" should see notice that changing closed task status is disallowed
