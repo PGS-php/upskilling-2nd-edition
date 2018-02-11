@@ -1,0 +1,14 @@
+App\Application\User\User:
+  type: entity
+  table: user
+  id:
+      id:
+          type: string
+          nullable: false
+          id: true
+  fields:
+    firstName:
+      column: first_name
+      type: string
+      length: 64
+      nullable: false

@@ -1,0 +1,11 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <h1>Welcome in TaskManager!</h1>
+    <h3>Your task list:</h3>
+    <ul class="list-group">
+        {% for task in tasks %}
+        <li class="list-group-item">{{ task.name }} <span class="badge badge-primary">{{ task.status }}</span></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
