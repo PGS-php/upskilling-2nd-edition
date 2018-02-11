@@ -13,6 +13,6 @@ $app->error(function (\Exception $e, Request $request, $code) use ($app) {
 
     switch ($code) {
         case 500:
-            return new Response($app['twig']->render('errors/5xx.html.twig'), 404);
+            return new Response($app['twig']->render('error.html.twig'), 500);
     }
 });
