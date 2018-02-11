@@ -57,7 +57,7 @@ class Task
         return $this->status;
     }
 
-    public function setStatus(Status $status, User $user): void
+    public function changeStatusByUser(Status $status, User $user): void
     {
         if ($this->status->equals($status)) {
             return;

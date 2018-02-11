@@ -75,7 +75,7 @@ class TaskSpec extends ObjectBehavior
 
         $status = Status::done();
 
-        $this->setStatus($status, $user);
+        $this->changeStatusByUser($status, $user);
         $this->getStatus()->shouldReturn($status);
     }
 
@@ -85,7 +85,7 @@ class TaskSpec extends ObjectBehavior
             "Add switch language button",
             Status::toDo()
         );
-        $this->setStatus(Status::inProgress(), $user);
+        $this->changeStatusByUser(Status::inProgress(), $user);
         $this->assigned()->shouldReturn($user);
     }
 
@@ -95,7 +95,7 @@ class TaskSpec extends ObjectBehavior
             "Add switch language button",
             Status::inProgress()
         );
-        $this->setStatus(Status::toDo(), $user);
+        $this->changeStatusByUser(Status::toDo(), $user);
         $this->hasAssignment()->shouldReturn(false);
     }
 
@@ -105,6 +105,6 @@ class TaskSpec extends ObjectBehavior
             "Add switch language button",
             Status::closed()
         );
-        $this->shouldThrow(UnexpectedStatusChangeException::class)->duringSetStatus(Status::toDo(), $user);
+        $this->shouldThrow(UnexpectedStatusChangeException::class)->duringChangeStatusByUser(Status::toDo(), $user);
     }
 }

@@ -8,6 +8,7 @@ use Behat\Gherkin\Node\TableNode;
 use PHPUnit\Framework\Assert;
 use App\Application\Task\Task;
 use App\Application\User\User;
+use App\Infrastructure\InMemory\MessageBag;
 use App\Infrastructure\InMemory\TaskRegistry;
 use App\Infrastructure\InMemory\UserRegistry;
 use App\Application\Task\UnexpectedStatusChangeException;
@@ -22,6 +23,9 @@ class FeatureContext implements Context
 
     /** @var UserRegistry */
     private $userRegistry;
+
+    /** @var MessageBag */
+    private $messageBag;
 
     /**
      * Initializes context.
@@ -92,6 +96,14 @@ class FeatureContext implements Context
     public function thereIsNoTasks()
     {
         $this->taskRegistry = new TaskRegistry();
+    }
+
+    /**
+     * @Given there is no notifications
+     */
+    public function thereIsNoNotifications()
+    {
+        $this->messageBag = new MessageBag();
     }
 
     /**
@@ -249,11 +261,11 @@ class FeatureContext implements Context
      */
     public function userNamedChangesTaskNamedStatusTo(User $user, Task $task, Status $status)
     {
-        $task->setStatus($status, $user);
+        $task->changeStatusByUser($status, $user);
     }
 
     /**
-     * @Then task named :task should have status :status
+     * @Then task named :task (still) should have status :status
      */
     public function taskNamedShouldHaveStatus(Task $task, Status $status)
     {
@@ -271,22 +283,26 @@ class FeatureContext implements Context
     }
 
     /**
-     * @When task :exception is thrown during user named :user is changing task named :task status change to :status
+     * @When user named :user tries to change task named :task status to :status
      */
-    public function taskIsThrownDuringUserNamedIsChangingTaskNamedStatusChangeTo(
-        UnexpectedStatusChangeException $exception,
-        User $user,
-        Task $task,
-        Status $status
-    ) {
+    public function userNamedTriesToChangeTaskNamedStatus(User $user, Task $task, Status $status)
+    {
         try {
-            $task->setStatus($status, $user);
-        } catch (\Exception $thrownException) {
-            Assert::assertEquals($exception, $thrownException);
-
-            return;
+            $task->changeStatusByUser($status, $user);
+        } catch (UnexpectedStatusChangeException $exception) {
+            $this->messageBag->add($exception->getMessage());
         }
+    }
 
-        Assert::fail(sprintf('Expected exception %s was not raised.', UnexpectedStatusChangeException::class));
+    /**
+     * @Then user named :user should see notice that changing closed task status is disallowed
+     */
+    public function userNamedShouldSeeNoticeThatChangingClosedTaskStatusIsDisallowed(User $user)
+    {
+        $exception = UnexpectedStatusChangeException::createForClosedStatus();
+
+        Assert::assertTrue(
+            $this->messageBag->has($exception->getMessage())
+        );
     }
 }
