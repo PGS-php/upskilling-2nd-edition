@@ -79,26 +79,6 @@ class TaskSpec extends ObjectBehavior
         $this->getStatus()->shouldReturn($status);
     }
 
-    function it_should_have_assigned_user_after_change_status_to_in_progress(User $user)
-    {
-        $this->beConstructedWith(
-            "Add switch language button",
-            Status::toDo()
-        );
-        $this->setStatus(Status::inProgress(), $user);
-        $this->assigned()->shouldReturn($user);
-    }
-
-    function it_should_not_have_assigned_user_after_change_status_to_todo(User $user)
-    {
-        $this->beConstructedWith(
-            "Add switch language button",
-            Status::inProgress()
-        );
-        $this->setStatus(Status::toDo(), $user);
-        $this->hasAssignment()->shouldReturn(false);
-    }
-
     function it_should_throw_exception_when_status_is_changed_from_close(User $user)
     {
         $this->beConstructedWith(

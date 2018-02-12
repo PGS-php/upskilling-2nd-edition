@@ -7,11 +7,12 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use PHPUnit\Framework\Assert;
 use App\Application\Task\Task;
+use App\Application\Task\UnexpectedStatusChangeException;
 use App\Application\User\User;
+use App\Application\DomainManager\TaskStatusManager;
 use App\Infrastructure\InMemory\MessageBag;
 use App\Infrastructure\InMemory\TaskRegistry;
 use App\Infrastructure\InMemory\UserRegistry;
-use App\Application\Task\UnexpectedStatusChangeException;
 
 /**
  * Defines application features from the specific context.
@@ -27,6 +28,9 @@ class FeatureContext implements Context
     /** @var MessageBag */
     private $messageBag;
 
+    /** @var TaskStatusManager */
+    private $taskStatusManager;
+
     /**
      * Initializes context.
      *
@@ -37,6 +41,7 @@ class FeatureContext implements Context
     public function __construct()
     {
         $this->taskRegistry = new TaskRegistry();
+        $this->taskStatusManager = new TaskStatusManager();
     }
 
     /**
@@ -261,7 +266,7 @@ class FeatureContext implements Context
      */
     public function userNamedChangesTaskNamedStatusTo(User $user, Task $task, Status $status)
     {
-        $task->setStatus($status, $user);
+        $this->taskStatusManager->changeTaskStatusByUser($task, $status, $user);
     }
 
     /**
@@ -288,7 +293,7 @@ class FeatureContext implements Context
     public function userNamedTriesToChangeTaskNamedStatus(User $user, Task $task, Status $status)
     {
         try {
-            $task->setStatus($status, $user);
+            $this->taskStatusManager->changeTaskStatusByUser($task, $status, $user);
         } catch (UnexpectedStatusChangeException $exception) {
             $this->messageBag->add($exception->getMessage());
         }
