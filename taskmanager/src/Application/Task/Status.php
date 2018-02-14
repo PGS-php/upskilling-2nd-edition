@@ -5,6 +5,8 @@ namespace App\Application\Task;
 class Status
 {
     private const TODO = 'TODO';
+    private const DONE = 'DONE';
+    private const CLOSED = 'CLOSED';
 
     private $status;
 
@@ -20,11 +22,21 @@ class Status
 
     public function equals(Status $status): bool
     {
-        return (string)$status === (string)$this;
+        return strtolower((string)$status) === strtolower((string)$this);
     }
 
     public static function toDo(): self
     {
         return new self(self::TODO);
+    }
+
+    public static function done(): self
+    {
+        return new self(self::DONE);
+    }
+
+    public static function closed(): self
+    {
+        return new self(self::CLOSED);
     }
 }
