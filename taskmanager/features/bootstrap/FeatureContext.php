@@ -7,7 +7,10 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use PHPUnit\Framework\Assert;
 use App\Application\Task\Task;
+use App\Application\Task\UnexpectedStatusChangeException;
 use App\Application\User\User;
+use App\Application\DomainManager\TaskStatusManager;
+use App\Infrastructure\InMemory\MessageBag;
 use App\Infrastructure\InMemory\TaskRegistry;
 use App\Infrastructure\InMemory\UserRegistry;
 
@@ -22,6 +25,12 @@ class FeatureContext implements Context
     /** @var UserRegistry */
     private $userRegistry;
 
+    /** @var MessageBag */
+    private $messageBag;
+
+    /** @var TaskStatusManager */
+    private $taskStatusManager;
+
     /**
      * Initializes context.
      *
@@ -32,6 +41,58 @@ class FeatureContext implements Context
     public function __construct()
     {
         $this->taskRegistry = new TaskRegistry();
+        $this->taskStatusManager = new TaskStatusManager();
+    }
+
+    /**
+     * @Transform :user
+     */
+    public function convertUserNameToUser(string $user): User
+    {
+        $userCollection = $this->userRegistry->getByName($user);
+
+        return reset($userCollection);
+    }
+
+
+    /**
+     * @Transform :task
+     */
+    public function convertTaskNameToTask(string $task): Task
+    {
+        $taskCollection = $this->taskRegistry->getByName($task);
+
+        return reset($taskCollection);
+    }
+
+    /**
+     * @Transform :status
+     */
+    public function convertStatusNameToStatus(string $status): Status
+    {
+        switch ($status) {
+            case 'TODO':
+                return Status::toDo();
+            case 'IN PROGRESS':
+                return Status::inProgress();
+            case 'DONE':
+                return Status::done();
+            case 'CLOSED':
+                return Status::closed();
+        }
+
+        throw new Exception(sprintf(
+            'Unknow status name "%s". Allowed options: "TODO", "IN PROGRESS", "DONE", "CLOSED"',
+            $status
+        ));
+    }
+
+    /**
+     * @Transform :exception
+     */
+    public function convertToUnexpectedStatusChangeException(string $exception): UnexpectedStatusChangeException
+    {
+        return UnexpectedStatusChangeException::createForClosedStatus();
     }
 
     /**
@@ -40,6 +101,14 @@ class FeatureContext implements Context
     public function thereIsNoTasks()
     {
         $this->taskRegistry = new TaskRegistry();
+    }
+
+    /**
+     * @Given there is no notifications
+     */
+    public function thereIsNoNotifications()
+    {
+        $this->messageBag = new MessageBag();
     }
 
     /**
@@ -114,23 +183,13 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Transform :task
+     * @Given there is a task named :taskName with :status status
      */
-    public function convertTaskNameToTask(string $task): Task
+    public function thereIsTaskNamedWithStatus(string $taskName, Status $status)
     {
-        $taskCollection = $this->taskRegistry->getByName($task);
+        $task = new Task($taskName, $status);
 
-        return reset($taskCollection);
-    }
-
-    /**
-     * @Transform :user
-     */
-    public function convertUserNameToUser(string $user): User
-    {
-        $userCollection = $this->userRegistry->getByName($user);
-
-        return reset($userCollection);
+        $this->taskRegistry->add($task);
     }
 
     /**
@@ -202,4 +261,53 @@ class FeatureContext implements Context
         Assert::assertEmpty($this->taskRegistry->getByName($name));
     }
 
+    /**
+     * @When user named :user changes task named :task status to :status
+     */
+    public function userNamedChangesTaskNamedStatusTo(User $user, Task $task, Status $status)
+    {
+        $this->taskStatusManager->changeTaskStatusByUser($task, $status, $user);
+    }
+
+    /**
+     * @Then task named :task (still) should have status :status
+     */
+    public function taskNamedShouldHaveStatus(Task $task, Status $status)
+    {
+        Assert::assertTrue(
+            $task->getStatus()->equals($status)
+        );
+    }
+
+    /**
+     * @Then task named :task should be unassigned
+     */
+    public function taskNamedShouldBeUnassigned(Task $task)
+    {
+        Assert::assertNotTrue($task->hasAssignment());
+    }
+
+    /**
+     * @When user named :user tries to change task named :task status to :status
+     */
+    public function userNamedTriesToChangeTaskNamedStatus(User $user, Task $task, Status $status)
+    {
+        try {
+            $this->taskStatusManager->changeTaskStatusByUser($task, $status, $user);
+        } catch (UnexpectedStatusChangeException $exception) {
+            $this->messageBag->add($exception->getMessage());
+        }
+    }
+
+    /**
+     * @Then user named :user should see notice that changing closed task status is disallowed
+     */
+    public function userNamedShouldSeeNoticeThatChangingClosedTaskStatusIsDisallowed(User $user)
+    {
+        $exception = UnexpectedStatusChangeException::createForClosedStatus();
+
+        Assert::assertTrue(
+            $this->messageBag->has($exception->getMessage())
+        );
+    }
 }

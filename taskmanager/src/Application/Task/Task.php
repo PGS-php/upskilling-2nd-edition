@@ -57,6 +57,15 @@ class Task
         return $this->status;
     }
 
+    public function setStatus(Status $status): void
+    {
+        if ($this->status->equals(Status::closed())) {
+            throw UnexpectedStatusChangeException::createForClosedStatus();
+        }
+
+        $this->status = $status;
+    }
+
     /**
      * @return string
      */
@@ -88,6 +97,11 @@ class Task
     {
         $this->user = $user;
         $this->update();
+    }
+
+    public function unassign(): void
+    {
+        $this->user = null;
     }
 
     public function hasAssignment(): bool
