@@ -57,6 +57,25 @@ class Task
         return $this->status;
     }
 
+    public function changeStatusByUser(Status $status, User $user): void
+    {
+        if ($this->status->equals($status)) {
+            return;
+        }
+
+        if ($this->status->equals(Status::closed())) {
+            throw UnexpectedStatusChangeException::createForClosedStatus();
+        }
+
+        $this->status = $status;
+
+        if ($this->status->equals(Status::inProgress())) {
+            $this->assign($user);
+        } elseif ($this->status->equals(Status::toDo())) {
+            $this->unassign();
+        }
+    }
+
     /**
      * @return string
      */
@@ -88,6 +107,11 @@ class Task
     {
         $this->user = $user;
         $this->update();
+    }
+
+    public function unassign(): void
+    {
+        $this->user = null;
     }
 
     public function hasAssignment(): bool

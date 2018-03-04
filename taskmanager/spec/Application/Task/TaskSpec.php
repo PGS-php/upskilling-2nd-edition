@@ -4,6 +4,7 @@ namespace spec\App\Application\Task;
 
 use App\Application\Task\Status;
 use App\Application\Task\Task;
+use App\Application\Task\UnexpectedStatusChangeException;
 use App\Application\User\UnassignedUserException;
 use App\Application\User\User;
 use PhpSpec\ObjectBehavior;
@@ -63,5 +64,47 @@ class TaskSpec extends ObjectBehavior
     function it_should_has_priority()
     {
         $this->getPriority()->shouldReturn(Task::PRIORITY_MAJOR);
+    }
+
+    function it_should_be_possible_to_change_status(User $user)
+    {
+        $this->beConstructedWith(
+            "Add switch language button",
+            Status::toDo()
+        );
+
+        $status = Status::done();
+
+        $this->changeStatusByUser($status, $user);
+        $this->getStatus()->shouldReturn($status);
+    }
+
+    function it_should_have_assigned_user_after_change_status_to_in_progress(User $user)
+    {
+        $this->beConstructedWith(
+            "Add switch language button",
+            Status::toDo()
+        );
+        $this->changeStatusByUser(Status::inProgress(), $user);
+        $this->assigned()->shouldReturn($user);
+    }
+
+    function it_should_not_have_assigned_user_after_change_status_to_todo(User $user)
+    {
+        $this->beConstructedWith(
+            "Add switch language button",
+            Status::inProgress()
+        );
+        $this->changeStatusByUser(Status::toDo(), $user);
+        $this->hasAssignment()->shouldReturn(false);
+    }
+
+    function it_should_throw_exception_when_status_is_changed_from_close(User $user)
+    {
+        $this->beConstructedWith(
+            "Add switch language button",
+            Status::closed()
+        );
+        $this->shouldThrow(UnexpectedStatusChangeException::class)->duringChangeStatusByUser(Status::toDo(), $user);
     }
 }
