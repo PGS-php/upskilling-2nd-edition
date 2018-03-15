@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\User;
+namespace App\Domain\Process\User;
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
