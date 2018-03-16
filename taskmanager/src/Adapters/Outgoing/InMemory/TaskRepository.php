@@ -1,26 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace App\Infrastructure\InMemory;
+namespace App\Adapters\Outgoing\InMemory;
 
-use App\Application\Task\Status;
-use App\Application\Task\Task;
-use App\Application\Task\TaskRegistry as BaseTaskRegistry;
+use App\Domain\Process\Task\Status;
+use App\Domain\Process\Task\Task;
+use App\Domain\Process\User\User;
 
-class TaskRegistry implements BaseTaskRegistry
+class TaskRepository implements \App\Domain\Ports\Outgoing\TaskRepository
 {
     private $tasks = [];
 
-    /**
-     * @inheritdoc
-     */
     public function getAll(): array
     {
         return $this->tasks;
-    }
-
-    public function add(Task $task): void
-    {
-        $this->tasks[(string)$task->getId()] = $task;
     }
 
     public function getByStatus(Status $status): array
@@ -35,6 +27,21 @@ class TaskRegistry implements BaseTaskRegistry
         return array_filter($this->tasks, function (Task $task) use ($name) {
             return $name === $task->getName();
         });
+    }
+
+    public function add(Task $task)
+    {
+        $this->tasks[(string)$task->getId()] = $task;
+    }
+
+    public function changeAssignee(Task $task, User $user)
+    {
+        // TODO: Implement changeAssignee() method.
+    }
+
+    public function changeStatus(Task $task, Status $status)
+    {
+        // TODO: Implement changeStatus() method.
     }
 
     public function remove(Task $task): void

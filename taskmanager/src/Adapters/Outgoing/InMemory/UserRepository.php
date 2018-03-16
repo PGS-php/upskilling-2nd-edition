@@ -1,11 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace App\Infrastructure\InMemory;
+namespace App\Adapters\Outgoing\InMemory;
 
-use App\Application\User\User;
-use App\Application\User\UserRegistry as BaseUserRegistry;
+use App\Domain\Process\User\User;
 
-class UserRegistry implements BaseUserRegistry
+class UserRepository implements \App\Domain\Ports\Outgoing\UserRepository
 {
     private $users = [];
 
