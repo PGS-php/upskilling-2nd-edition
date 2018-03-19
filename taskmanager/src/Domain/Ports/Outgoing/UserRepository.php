@@ -10,5 +10,5 @@ interface UserRepository
 
     public function add(User $user);
 
-    public function getByName($name);
+    public function getByName(string $name);
 }

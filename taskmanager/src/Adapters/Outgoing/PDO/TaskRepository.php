@@ -25,7 +25,7 @@ class TaskRepository implements \App\Domain\Ports\Outgoing\TaskRepository
         // TODO: Implement getByStatus() method.
     }
 
-    public function getByName($name)
+    public function getByName(string $name)
     {
         // TODO: Implement getByName() method.
     }

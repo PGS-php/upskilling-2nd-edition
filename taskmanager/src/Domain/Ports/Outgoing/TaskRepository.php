@@ -12,7 +12,7 @@ interface TaskRepository
 
     public function getByStatus(Status $status);
 
-    public function getByName($name);
+    public function getByName(string $name);
 
     public function add(Task $task);
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\App\ApDomain\Processplication\User;
+namespace spec\App\Domain\Process\User;
 
 use App\Domain\Process\User\User;
 use PhpSpec\ObjectBehavior;
