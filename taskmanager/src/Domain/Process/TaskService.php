@@ -29,19 +29,19 @@ class TaskService implements AddTask, AssignTask, ChangeStatus
         $this->userRepository = $userRepository;
     }
 
-
-    public function addTask(NewTask $task)
+    public function addTask($newTask)
     {
-        // TODO: Implement addTask() method.
+        $task = new Task($newTask->name, $newTask->status);
+        $this->taskRepository->add($task);
     }
 
     public function assign(Task $task, User $user)
     {
-        // TODO: Implement assign() method.
+        $task->assign($user);
     }
 
-    public function change(Task $task, Status $status)
+    public function change(Task $task, Status $status, User $user)
     {
-        // TODO: Implement change() method.
+        $task->changeStatusByUser($status, $user);
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\App\Application\Task;
+namespace spec\App\Domain\Process\Task;
 
-use App\Application\Task\Status;
+use App\Domain\Process\Task\Status;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

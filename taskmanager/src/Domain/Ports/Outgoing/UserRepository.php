@@ -6,5 +6,9 @@ use App\Domain\Process\User\User;
 
 interface UserRepository
 {
-    public function userExist(User $user);
+    public function getAll();
+
+    public function add(User $user);
+
+    public function getByName($name);
 }

@@ -15,7 +15,22 @@ class TaskRepository implements \App\Domain\Ports\Outgoing\TaskRepository
         $this->db = $pdo;
     }
 
-    public function saveTask(Task $task)
+    public function getAll()
+    {
+        // TODO: Implement getAll() method.
+    }
+
+    public function getByStatus(Status $status)
+    {
+        // TODO: Implement getByStatus() method.
+    }
+
+    public function getByName($name)
+    {
+        // TODO: Implement getByName() method.
+    }
+
+    public function add(Task $task)
     {
         $sth = $this->db->prepare('INSERT INTO task (name, status) VALUES (:name, :status)');
         $sth->bindParam(':name', $task->getName());
@@ -31,5 +46,10 @@ class TaskRepository implements \App\Domain\Ports\Outgoing\TaskRepository
     public function changeStatus(Task $task, Status $status)
     {
         // TODO: Implement changeStatus() method.
+    }
+
+    public function remove(Task $task)
+    {
+        // TODO: Implement remove() method.
     }
 }

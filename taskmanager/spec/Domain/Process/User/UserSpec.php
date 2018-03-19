@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\App\Application\User;
+namespace spec\App\ApDomain\Processplication\User;
 
-use App\Application\User\User;
+use App\Domain\Process\User\User;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Ramsey\Uuid\UuidInterface;

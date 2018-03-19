@@ -1,12 +1,12 @@
 <?php
 
-namespace spec\App\Application\Task;
+namespace spec\App\Domain\Process\Task;
 
-use App\Application\Task\Status;
-use App\Application\Task\Task;
-use App\Application\Task\UnexpectedStatusChangeException;
-use App\Application\User\UnassignedUserException;
-use App\Application\User\User;
+use App\Domain\Process\Task\Status;
+use App\Domain\Process\Task\Task;
+use App\Domain\Process\Task\UnexpectedStatusChangeException;
+use App\Domain\Process\User\UnassignedUserException;
+use App\Domain\Process\User\User;
 use PhpSpec\ObjectBehavior;
 use Ramsey\Uuid\UuidInterface;
 
