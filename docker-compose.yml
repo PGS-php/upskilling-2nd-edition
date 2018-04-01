@@ -12,7 +12,7 @@ services:
         container_name: tm_nginx
         image: nginx:stable
         ports:
-            - "80:80"
+            - "81:80"
         links:
             - php
         volumes_from:
@@ -29,4 +29,4 @@ services:
             MYSQL_USER: tm
             MYSQL_PASSWORD: tm
         ports:
-            - "3306:3306"
+            - "3302:3306"
