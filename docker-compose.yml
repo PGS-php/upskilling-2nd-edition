@@ -22,7 +22,7 @@ services:
             - ./logs/nginx:/var/log/nginx
     mysql:
         container_name: tm_mysql
-        image: mysql:5.7
+        build: docker/mysql
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: tm

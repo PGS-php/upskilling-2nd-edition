@@ -1,31 +1,31 @@
 <?php
 
-use App\Application\Task\Status;
+use App\Domain\Task\Status;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use PHPUnit\Framework\Assert;
-use App\Application\Task\Task;
-use App\Application\User\User;
-use App\Infrastructure\InMemory\MessageBag;
-use App\Infrastructure\InMemory\TaskRegistry;
-use App\Infrastructure\InMemory\UserRegistry;
-use App\Application\Task\UnexpectedStatusChangeException;
+use App\Domain\Task\Task;
+use App\Domain\User\User;
+use App\Infrastructure\Adapters\Outgoing\InMemory\TaskRepository;
+use App\Infrastructure\Adapters\Outgoing\InMemory\UserRepository;
+use App\Infrastructure\Adapters\Outgoing\InMemory\MessageRepository;
+use App\Domain\Task\UnexpectedStatusChangeException;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context
 {
-    /** @var TaskRegistry */
-    private $taskRegistry;
+    /** @var TaskRepository */
+    private $taskRepository;
 
-    /** @var UserRegistry */
-    private $userRegistry;
+    /** @var UserRepository */
+    private $userRepository;
 
-    /** @var MessageBag */
-    private $messageBag;
+    /** @var MessageRepository */
+    private $messageRepository;
 
     /**
      * Initializes context.
@@ -36,7 +36,9 @@ class FeatureContext implements Context
      */
     public function __construct()
     {
-        $this->taskRegistry = new TaskRegistry();
+        $this->taskRepository = new TaskRepository();
+        $this->userRepository = new UserRepository();
+        $this->messageRepository = new MessageRepository();
     }
 
     /**
@@ -44,7 +46,7 @@ class FeatureContext implements Context
      */
     public function convertUserNameToUser(string $user): User
     {
-        $userCollection = $this->userRegistry->getByName($user);
+        $userCollection = $this->userRepository->getByName($user);
 
         return reset($userCollection);
     }
@@ -55,7 +57,7 @@ class FeatureContext implements Context
      */
     public function convertTaskNameToTask(string $task): Task
     {
-        $taskCollection = $this->taskRegistry->getByName($task);
+        $taskCollection = $this->taskRepository->getByName($task);
 
         return reset($taskCollection);
     }
@@ -95,7 +97,7 @@ class FeatureContext implements Context
      */
     public function thereIsNoTasks()
     {
-        $this->taskRegistry = new TaskRegistry();
+        $this->taskRepository = new TaskRepository();
     }
 
     /**
@@ -103,7 +105,7 @@ class FeatureContext implements Context
      */
     public function thereIsNoNotifications()
     {
-        $this->messageBag = new MessageBag();
+        $this->messageRepository = new MessageRepository();
     }
 
     /**
@@ -112,7 +114,7 @@ class FeatureContext implements Context
     public function iCreateATaskNamed($taskName)
     {
         $task = new Task($taskName, Status::toDo());
-        $this->taskRegistry->add($task);
+        $this->taskRepository->add($task);
     }
 
     /**
@@ -122,7 +124,7 @@ class FeatureContext implements Context
     {
         Assert::assertCount(
             (int)$count,
-            $this->taskRegistry->getByStatus(Status::toDo())
+            $this->taskRepository->getByStatus(Status::toDo())
         );
     }
 
@@ -131,10 +133,9 @@ class FeatureContext implements Context
      */
     public function thereAreFollowUsers(TableNode $table)
     {
-        $this->userRegistry = new UserRegistry();
         foreach ($table as $item) {
             $user = new User($item['Name']);
-            $this->userRegistry->add($user);
+            $this->userRepository->add($user);
         }
     }
 
@@ -144,7 +145,7 @@ class FeatureContext implements Context
     public function thereIsUnassignedTaskNamed($name)
     {
         $task = new Task($name, Status::toDo());
-        $this->taskRegistry->add($task);
+        $this->taskRepository->add($task);
     }
 
     /**
@@ -174,7 +175,7 @@ class FeatureContext implements Context
     {
         $task = new Task($name, Status::toDo());
         $task->assign($user);
-        $this->taskRegistry->add($task);
+        $this->taskRepository->add($task);
     }
 
     /**
@@ -184,7 +185,7 @@ class FeatureContext implements Context
     {
         $task = new Task($taskName, $status);
 
-        $this->taskRegistry->add($task);
+        $this->taskRepository->add($task);
     }
 
     /**
@@ -194,7 +195,7 @@ class FeatureContext implements Context
     {
         Assert::assertCount(
             (int)$count,
-            $this->taskRegistry->getAll()
+            $this->taskRepository->getAll()
         );
     }
 
@@ -203,7 +204,7 @@ class FeatureContext implements Context
      */
     public function taskShouldHaveCreateDate()
     {
-        $tasks = $this->taskRegistry->getAll();
+        $tasks = $this->taskRepository->getAll();
         $now = new \DateTime();
         Assert::assertEquals(
             $now->format(Task::DATE_FORMAT),
@@ -216,7 +217,7 @@ class FeatureContext implements Context
      */
     public function taskShouldHaveUpdateDate()
     {
-        $tasks = $this->taskRegistry->getAll();
+        $tasks = $this->taskRepository->getAll();
         $now = new \DateTime();
         Assert::assertEquals(
             $now->format(Task::DATE_FORMAT),
@@ -245,7 +246,7 @@ class FeatureContext implements Context
      */
     public function iRemoveTaskNamed(Task $task)
     {
-        $this->taskRegistry->remove($task);
+        $this->taskRepository->remove($task);
     }
 
     /**
@@ -253,7 +254,7 @@ class FeatureContext implements Context
      */
     public function taskNamedShouldNoLongerExist(string $name)
     {
-        Assert::assertEmpty($this->taskRegistry->getByName($name));
+        Assert::assertEmpty($this->taskRepository->getByName($name));
     }
 
     /**
@@ -290,7 +291,7 @@ class FeatureContext implements Context
         try {
             $task->changeStatusByUser($status, $user);
         } catch (UnexpectedStatusChangeException $exception) {
-            $this->messageBag->add($exception->getMessage());
+            $this->messageRepository->add($exception->getMessage());
         }
     }
 
@@ -302,7 +303,7 @@ class FeatureContext implements Context
         $exception = UnexpectedStatusChangeException::createForClosedStatus();
 
         Assert::assertTrue(
-            $this->messageBag->has($exception->getMessage())
+            $this->messageRepository->has($exception->getMessage())
         );
     }
 }
