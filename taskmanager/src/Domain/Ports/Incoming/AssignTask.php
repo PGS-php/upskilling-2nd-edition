@@ -2,8 +2,8 @@
 
 namespace App\Domain\Ports\Incoming;
 
-use App\Domain\Process\Task\Task;
-use App\Domain\Process\User\User;
+use App\Domain\Task\Task;
+use App\Domain\User\User;
 
 interface AssignTask
 {

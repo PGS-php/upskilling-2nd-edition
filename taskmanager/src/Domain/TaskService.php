@@ -2,7 +2,6 @@
 
 namespace App\Domain;
 
-use App\Domain\Ports\DTO\NewTask;
 use App\Domain\Ports\Incoming\AddTask;
 use App\Domain\Ports\Incoming\AssignTask;
 use App\Domain\Ports\Incoming\ChangeStatus;
@@ -31,7 +30,8 @@ class TaskService implements AddTask, AssignTask, ChangeStatus
 
     public function addTask($newTask)
     {
-        $task = new Task($newTask->name, $newTask->status);
+        $status = new Status($newTask->status);
+        $task = new Task($newTask->name, $status);
         $this->taskRepository->add($task);
     }
 

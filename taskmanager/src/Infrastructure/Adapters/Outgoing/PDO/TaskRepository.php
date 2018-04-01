@@ -17,7 +17,20 @@ class TaskRepository implements \App\Domain\Ports\Outgoing\TaskRepository
 
     public function getAll()
     {
-        // TODO: Implement getAll() method.
+        $sth = $this->db->prepare('SELECT * FROM task');
+        $sth->execute();
+        $results = $sth->fetchAll();
+
+        foreach ($results as $item) {
+            $tasks[] = [
+                'id' => (string) $item['id'],
+                'name' => (string) $item['name'],
+                'description' => (string) $item['description'],
+                'priority' => (string)$item['priority']
+            ];
+        }
+
+        return empty($tasks) ? [] : $tasks;
     }
 
     public function getByStatus(Status $status)
@@ -32,9 +45,11 @@ class TaskRepository implements \App\Domain\Ports\Outgoing\TaskRepository
 
     public function add(Task $task)
     {
-        $sth = $this->db->prepare('INSERT INTO task (name, status) VALUES (:name, :status)');
+        $sth = $this->db->prepare("INSERT INTO tm.task (id, name, status, priority) VALUES (:id, :name, :status, :priority)");
+        $sth->bindParam(':id', $task->getId()->toString());
         $sth->bindParam(':name', $task->getName());
-        $sth->bindParam(':status', $task->getStatus());
+        $sth->bindParam(':status', $task->getStatus()->__toString());
+        $sth->bindParam(':priority', $task->getPriority());
         $sth->execute();
     }
 

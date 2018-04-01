@@ -1,0 +1,50 @@
+services:
+  pdo:
+    class: \PDO
+    arguments:
+      - '%database_dsn%'
+      - '%database_user%'
+      - '%database_password%'
+
+  application.adapters.task_repository:
+    class: App\Infrastructure\Adapters\Outgoing\PDO\TaskRepository
+    arguments:
+      - '@pdo'
+
+  application.adapters.user_repository:
+    class: App\Infrastructure\Adapters\Outgoing\PDO\UserRepository
+    arguments:
+      - '@pdo'
+
+  application.query.all_tasks:
+    class: App\Application\Query\AllTasksQueryHandler
+    arguments:
+      - '@application.adapters.task_repository'
+
+  application.query_bus:
+    class: App\Application\ServiceBus\QueryBus
+    public: true
+    calls:
+       - [register, ['@application.query.all_tasks']]
+
+  domain.task_service:
+    class: App\Domain\TaskService
+    arguments:
+      - '@application.adapters.task_repository'
+      - '@application.adapters.user_repository'
+
+  application.adapters.add_task:
+    class: App\Infrastructure\Adapters\Incoming\JSON\AddTask
+    arguments:
+      - '@domain.task_service'
+
+  application.command.create_task:
+    class: App\Application\Command\CreateTaskCommandHandler
+    arguments:
+      - '@application.adapters.add_task'
+
+  application.command_bus:
+    class: App\Application\ServiceBus\CommandBus
+    public: true
+    calls:
+       - [register, ['@application.command.create_task']]

@@ -1,0 +1,4 @@
+parameters:
+  database_dsn: mysql:host=tm_mysql;dbname=tm;charset=utf8mb4
+  database_user: tm
+  database_password: tm

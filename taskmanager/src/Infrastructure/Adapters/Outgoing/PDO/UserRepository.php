@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Adapters\Outgoing\PDO;
+namespace App\Infrastructure\Adapters\Outgoing\PDO;
 
-use App\Domain\Process\Task\Status;
-use App\Domain\Process\Task\Task;
-use App\Domain\Process\User\User;
+use App\Domain\User\User;
 
 class UserRepository implements \App\Domain\Ports\Outgoing\UserRepository
 {
@@ -25,7 +23,7 @@ class UserRepository implements \App\Domain\Ports\Outgoing\UserRepository
         // TODO: Implement add() method.
     }
 
-    public function getByName($name)
+    public function getByName(string $name)
     {
         // TODO: Implement getByName() method.
     }

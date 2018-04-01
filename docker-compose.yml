@@ -12,7 +12,7 @@ services:
         container_name: tm_nginx
         image: nginx:stable
         ports:
-            - "81:80"
+            - "80:80"
         links:
             - php
         volumes_from:
@@ -22,11 +22,11 @@ services:
             - ./logs/nginx:/var/log/nginx
     mysql:
         container_name: tm_mysql
-        image: mysql:5.7
+        build: docker/mysql
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: tm
             MYSQL_USER: tm
             MYSQL_PASSWORD: tm
         ports:
-            - "3302:3306"
+            - "3306:3306"

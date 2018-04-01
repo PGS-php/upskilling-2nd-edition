@@ -1,3 +1,7 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: services.yml }
+
 framework:
     secret: S0ME_SECRET
     templating:

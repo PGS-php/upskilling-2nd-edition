@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Adapters\Incoming\JSON;
+namespace App\Infrastructure\Adapters\Incoming\JSON;
 
 use App\Domain\Ports\DTO\NewTask;
-use App\Domain\Process\TaskService;
+use App\Domain\TaskService;
 
 class AddTask implements \App\Domain\Ports\Incoming\AddTask
 {
