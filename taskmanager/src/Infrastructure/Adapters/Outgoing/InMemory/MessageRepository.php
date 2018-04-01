@@ -1,10 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Adapters\Outgoing\InMemory;
-
-use App\Domain\Process\Task\Status;
-use App\Domain\Process\Task\Task;
-use App\Domain\Process\User\User;
+namespace App\Infrastructure\Adapters\Outgoing\InMemory;
 
 class MessageRepository implements \App\Domain\Ports\Outgoing\MessageRepository
 {

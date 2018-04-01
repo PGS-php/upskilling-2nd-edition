@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace App\Adapters\Outgoing\InMemory;
+namespace App\Infrastructure\Adapters\Outgoing\InMemory;
 
-use App\Domain\Process\Task\Status;
-use App\Domain\Process\Task\Task;
-use App\Domain\Process\User\User;
+use App\Domain\Task\Status;
+use App\Domain\Task\Task;
+use App\Domain\User\User;
 
 class TaskRepository implements \App\Domain\Ports\Outgoing\TaskRepository
 {

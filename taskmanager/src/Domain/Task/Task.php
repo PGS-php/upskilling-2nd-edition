@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace App\Domain\Process\Task;
+namespace App\Domain\Task;
 
-use App\Domain\Process\User\UnassignedUserException;
-use App\Domain\Process\User\User;
+use App\Domain\User\UnassignedUserException;
+use App\Domain\User\User;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 

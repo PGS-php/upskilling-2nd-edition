@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Domain\Process\Task;
+namespace App\Domain\Task;
 
 class UnexpectedStatusChangeException extends \LogicException
 {

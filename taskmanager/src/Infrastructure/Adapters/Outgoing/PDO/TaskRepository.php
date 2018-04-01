@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Adapters\Outgoing\PDO;
+namespace App\Infrastructure\Adapters\Outgoing\PDO;
 
-use App\Domain\Process\Task\Status;
-use App\Domain\Process\Task\Task;
-use App\Domain\Process\User\User;
+use App\Domain\Task\Status;
+use App\Domain\Task\Task;
+use App\Domain\User\User;
 
 class TaskRepository implements \App\Domain\Ports\Outgoing\TaskRepository
 {

@@ -2,9 +2,9 @@
 
 namespace App\Domain\Ports\Outgoing;
 
-use App\Domain\Process\Task\Status;
-use App\Domain\Process\Task\Task;
-use App\Domain\Process\User\User;
+use App\Domain\Task\Status;
+use App\Domain\Task\Task;
+use App\Domain\User\User;
 
 interface TaskRepository
 {

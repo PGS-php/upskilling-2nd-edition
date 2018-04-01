@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Adapters\Outgoing\InMemory;
+namespace App\Infrastructure\Adapters\Outgoing\InMemory;
 
-use App\Domain\Process\User\User;
+use App\Domain\User\User;
 
 class UserRepository implements \App\Domain\Ports\Outgoing\UserRepository
 {

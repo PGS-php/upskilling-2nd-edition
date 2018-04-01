@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Process;
+namespace App\Domain;
 
 use App\Domain\Ports\DTO\NewTask;
 use App\Domain\Ports\Incoming\AddTask;
@@ -8,9 +8,9 @@ use App\Domain\Ports\Incoming\AssignTask;
 use App\Domain\Ports\Incoming\ChangeStatus;
 use App\Domain\Ports\Outgoing\TaskRepository;
 use App\Domain\Ports\Outgoing\UserRepository;
-use App\Domain\Process\Task\Status;
-use App\Domain\Process\Task\Task;
-use App\Domain\Process\User\User;
+use App\Domain\Task\Status;
+use App\Domain\Task\Task;
+use App\Domain\User\User;
 
 class TaskService implements AddTask, AssignTask, ChangeStatus
 {

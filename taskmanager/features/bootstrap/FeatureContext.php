@@ -1,17 +1,17 @@
 <?php
 
-use App\Domain\Process\Task\Status;
+use App\Domain\Task\Status;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use PHPUnit\Framework\Assert;
-use App\Domain\Process\Task\Task;
-use App\Domain\Process\User\User;
-use App\Adapters\Outgoing\InMemory\TaskRepository;
-use App\Adapters\Outgoing\InMemory\UserRepository;
-use App\Adapters\Outgoing\InMemory\MessageRepository;
-use App\Domain\Process\Task\UnexpectedStatusChangeException;
+use App\Domain\Task\Task;
+use App\Domain\User\User;
+use App\Infrastructure\Adapters\Outgoing\InMemory\TaskRepository;
+use App\Infrastructure\Adapters\Outgoing\InMemory\UserRepository;
+use App\Infrastructure\Adapters\Outgoing\InMemory\MessageRepository;
+use App\Domain\Task\UnexpectedStatusChangeException;
 
 /**
  * Defines application features from the specific context.

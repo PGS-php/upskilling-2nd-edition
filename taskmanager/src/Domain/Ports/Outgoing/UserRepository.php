@@ -2,7 +2,7 @@
 
 namespace App\Domain\Ports\Outgoing;
 
-use App\Domain\Process\User\User;
+use App\Domain\User\User;
 
 interface UserRepository
 {
